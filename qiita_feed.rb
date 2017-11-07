@@ -36,19 +36,21 @@ doc.xpath("//a[@class='popularItem_articleTitle_text']").each do |element|
   ele = Hash.new
   ele[:href] =rootURL +  element['href']
   ele[:text] = element.xpath('span').text
-  text= "#{ele[:text]} : href[#{ele[:href]}]"
+  text= "- [ ] [#{ele[:text]}](#{ele[:href]})"
+  # [姫路IT系勉強会](http://histudy.doorkeeper.jp/)
+
   return_text += "#{text} \n"
 end
 
 # # #-------------------------------------------------
 sh.cd("~/qiita") do
-  f = sh.open("#{DATE}.txt", "w")
+  f = sh.open("#{DATE}.md", "w")
   f.puts return_text
   f.close
 end
 
 repo = Grit::Repo.new("~/qiita") #レポジトリオブジェクトを生成
-blob = Grit::Blob.create(repo, {:name => "#{DATE}.txt", :data => File.read("#{DATE}.txt")})
+blob = Grit::Blob.create(repo, {:name => "#{DATE}.md", :data => File.read("#{DATE}.md")})
 # # git add && commit
 Dir.chdir(repo.working_dir) { repo.add(blob.name) }
 repo.commit_index("#{DATE}'s qiita-feed")
