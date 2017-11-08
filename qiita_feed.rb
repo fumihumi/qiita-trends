@@ -1,13 +1,12 @@
   #shell command
 require 'shell'
   #git
-require 'grit'
-require 'rugged'
+require 'git'
   #scraping
 require 'nokogiri'
 require 'open-uri'
 
-#define
+#define 
 WORKINGDIR = '~/qiita'
   #日時を取得
 DATE =Date.today.to_s
@@ -24,7 +23,7 @@ end
 
 # #main script
 sh = Shell.new
-sh.mkdir("~/qiita") unless sh.exists?("~/qiita")
+sh.mkdir("#{WORKINGDIR}") unless sh.exists?("#{WORKINGDIR}")
 
 # #---------------------------------------------------
 #scraping
@@ -34,35 +33,20 @@ rootURL = 'http://qiita.com'
 return_text = ''
 doc.xpath("//a[@class='popularItem_articleTitle_text']").each do |element|
   ele = Hash.new
-  ele[:href] =rootURL +  element['href']
+  ele[:href] = rootURL +  element['href']
   ele[:text] = element.xpath('span').text
   text= "- [ ] [#{ele[:text]}](#{ele[:href]})"
-  # [姫路IT系勉強会](http://histudy.doorkeeper.jp/)
-
+  #md linkサンプル [姫路IT系勉強会](http://histudy.doorkeeper.jp/)
   return_text += "#{text} \n"
 end
-
-# # #-------------------------------------------------
-sh.cd("~/qiita") do
+# # 書き込み処理 #-------------------------------------------------
+sh.cd("#{WORKINGDIR}") do
   f = sh.open("#{DATE}.md", "w")
   f.puts return_text
   f.close
 end
 
-repo = Grit::Repo.new("~/qiita") #レポジトリオブジェクトを生成
-blob = Grit::Blob.create(repo, {:name => "#{DATE}.md", :data => File.read("#{DATE}.md")})
-# # git add && commit
-Dir.chdir(repo.working_dir) { repo.add(blob.name) }
-repo.commit_index("#{DATE}'s qiita-feed")
-
-
-
-#------pushしたい人生
-# remote = repo.remotes.last
-# repo.git.push({}, remote)
-# repo.git.push( {} , 'qiita-trends' , 'master')
-#
-# repo = Rugged::Repository.new('./')
-#
-#
-# repo.push('git@github.com:fumihumi/qiita-trends.git')
+repo = Git.open(WORKINGDIR)
+repo.add(".")
+repo.commit("#{DATE}'s qiita trends")
+repo.push
