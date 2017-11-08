@@ -9,7 +9,7 @@ require 'open-uri'
 #define 
 WORKINGDIR = '~/qiita'
   #日時を取得
-DATE =Date.today.to_s
+DATE = Date.today.strftime("%Y/%m/%d")
 
 def get_doc
   url = 'https://qiita.com/popular-items'
