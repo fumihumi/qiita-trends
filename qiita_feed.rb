@@ -1,6 +1,6 @@
   #shell command
 require 'shell'
-  #git
+  #git command
 require 'git'
   #scraping
 require 'nokogiri'
@@ -37,7 +37,7 @@ doc.xpath("//a[@class='popularItem_articleTitle_text']").each do |element|
 end
 # # 書き込み処理 #-------------------------------------------------
 
-# #main script
+# #shell
 sh = Shell.new
 sh.mkdir("#{WORKINGDIR}") unless sh.exists?("#{WORKINGDIR}")
 
@@ -46,6 +46,8 @@ sh.cd("#{WORKINGDIR}") do
   f.puts return_text
   f.close
 end
+#/ errorになる場合は該当ディレクトリにてgit init する必要がある。
+# Git.init('#{WORKINGDIR}') -> 動かないかも
 
 repo = Git.open(WORKINGDIR)
 repo.add(".")
