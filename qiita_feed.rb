@@ -46,8 +46,6 @@ sh.cd("#{WORKINGDIR}") do
   f.puts return_text
   f.close
 end
-#/ errorになる場合は該当ディレクトリにてgit init する必要がある。
-# Git.init('#{WORKINGDIR}') -> 動かないかも
 
 repo = Git.open(WORKINGDIR)
 repo.add(".")
